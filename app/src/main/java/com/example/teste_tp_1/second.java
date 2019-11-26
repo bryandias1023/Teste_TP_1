@@ -91,11 +91,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                c.moveToPosition(position);
-                int id_person = c.getInt(c.getColumnIndex(Contrato.Person._ID));
-                Intent intent = new Intent(second.this, Ver.class);
-                intent.putExtra("ver", id_person);
-                startActivity(intent);
+
 
 
             }
