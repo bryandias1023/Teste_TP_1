@@ -155,6 +155,24 @@
         android:textSize="10sp"
         ></TextView>
 
+    <TextView
+        android:id="@+id/tpais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/numberphone"
+        android:text="@string/pais"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/pais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tpais"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        ></TextView>
 
 
 

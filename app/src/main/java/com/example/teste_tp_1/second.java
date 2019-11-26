@@ -90,11 +90,16 @@ public class second extends AppCompatActivity implements SensorEventListener {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+/*
                 c.moveToPosition(position);
                 int id_person = c.getInt(c.getColumnIndex(Contrato.Person._ID));
+
+
+ */
+                Person p= arrayPerson.get(position);
+                Integer idperson= p.getId();
                 Intent intent = new Intent(second.this, Ver.class);
-                intent.putExtra("ver", id_person);
+                intent.putExtra("ver", idperson);
                 startActivity(intent);
 
 
@@ -111,6 +116,8 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
 
         super.onResume();
+
+
         if(!arrayPerson.isEmpty()) {
             arrayPerson.clear();
         }

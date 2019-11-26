@@ -70,8 +70,8 @@ SharedPreferences sharedPreferences;
         db= mDbHelper.getReadableDatabase();
         String [] pais= new  String[]{getResources().getString(R.string.pais),getResources().getString(R.string.pais1),getResources().getString(R.string.pais2),getResources().getString(R.string.pais3)};
         String[] items = new String[]{getResources().getString(R.string.gender),getResources().getString(R.string.male), getResources().getString(R.string.fem)};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, pais);
-        ArrayAdapter<String> adapterp = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapterp = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, pais);
 
         gendrop.setAdapter(adapter);
         paisdrop.setAdapter(adapterp);
@@ -127,7 +127,7 @@ SharedPreferences sharedPreferences;
                 }
 
 
-                else
+               else
                 {
 
                     paisd=3;
