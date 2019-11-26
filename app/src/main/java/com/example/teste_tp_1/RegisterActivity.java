@@ -85,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                             } else {
 
 
-                                Toast.makeText(RegisterActivity.this, "ja existe", Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, "password não igual", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
