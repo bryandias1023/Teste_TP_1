@@ -103,14 +103,22 @@
         android:hint="@string/postal"
         android:inputType="text"
         ></EditText>
-
+    <Spinner
+        android:id="@+id/pais"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:spinnerMode="dropdown"
+        ></Spinner>
 
     <Button
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:onClick="button1"
         android:text="@string/save"
 

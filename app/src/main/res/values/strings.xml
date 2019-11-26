@@ -35,5 +35,13 @@
     <string name="warning5">Did not find contact</string>
     <string name="find">Find</string>
     <string name="findS">Find Contact</string>
+    <string name="pais">Country</string>
+
+    <string name="pais1">Portugal</string>
+    <string name="pais2">França</string>
+    <string name="pais3">Espanha</string>
+
+
+
 
 </resources>

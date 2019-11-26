@@ -35,4 +35,9 @@
     <string name="warning5">Contacto não encontrado</string>
     <string name="find">Procurar</string>
     <string name="findS">Procurar Contacto</string>
+    <string name="pais1">Portugal</string>
+    <string name="pais2">França</string>
+    <string name="pais3">Espanha</string>
+    <string name="pais">Pais</string>
+
 </resources>

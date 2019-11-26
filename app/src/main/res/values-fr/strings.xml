@@ -35,4 +35,8 @@
     <string name="warning5">Contact n equisete pas</string>
     <string name="find">Cherchez</string>
     <string name="findS">Cherchez Contact</string>
+    <string name="pais">Pays</string>
+    <string name="pais1">Portugal</string>
+    <string name="pais2">França</string>
+    <string name="pais3">Espanha</string>
 </resources>

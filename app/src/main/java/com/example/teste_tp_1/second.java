@@ -111,7 +111,9 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
 
         super.onResume();
-
+        if(!arrayPerson.isEmpty()) {
+            arrayPerson.clear();
+        }
 /*
         mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);//registo do sensor
         c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?", new String[]{id_user + ""});//query que retira da tabla person todos os contactos introduzidos por aquele id

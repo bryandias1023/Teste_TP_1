@@ -98,10 +98,10 @@ public class RegisterActivity extends AppCompatActivity {
 
             public void carregaUser(String email,String passwd){
 
-                    String url="http://bdias.000webhostapp.com/myslim//api/userp";
-                Map<String, String> jsonParams = new HashMap<String, String>();
-                jsonParams.put("email",email);
-                jsonParams.put("passwd",passwd);
+                    String url="http://bdias.000webhostapp.com/myslim/api/userp";
+                    Map<String, String> jsonParams = new HashMap<String, String>();
+                    jsonParams.put("email",email);
+                    jsonParams.put("passwd",passwd);
 
 
                 JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(jsonParams), new Response.Listener<JSONObject>() {
@@ -118,6 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, response.getString("MSG"), Toast.LENGTH_LONG).show();
 
                             }
+
                         } catch (JSONException ex) {
                         }
 
@@ -145,6 +146,9 @@ public class RegisterActivity extends AppCompatActivity {
                 };
 
                 MySingleton.getInstance(RegisterActivity.this).addToRequestQueue(postRequest);
+
+                finish();
+
             }
 
 
@@ -152,6 +156,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         }
+
 
     }
 
