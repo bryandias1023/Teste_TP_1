@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/newcontact"
+        android:textColor="#002357"
+        android:textSize="30sp"
+        android:textColorHint="#DB1D1D"></TextView>
+
+
+    <EditText
+        android:id="@+id/nome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:autofillHints=""
+        android:hint="@string/name"></EditText>
+
+    <EditText
+        android:id="@+id/idade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:layout_marginTop="-45dp"
+        android:layout_marginRight="20dp"
+        android:hint="@string/age"
+        android:inputType="number"
+        android:autofillHints=""
+        android:layout_marginStart="380dp"
+        android:layout_marginEnd="20dp"></EditText>
+
+    <EditText
+        android:id="@+id/sobrenome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="-100dp"
+        android:layout_marginTop="-45dp"
+        android:layout_marginRight="20dp"
+        android:autofillHints=""
+        android:hint="@string/surname"></EditText>
+
+    <EditText
+        android:id="@+id/profissao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/profession"
+        ></EditText>
+
+    <EditText
+        android:id="@+id/genero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/gender"
+        ></EditText>
+
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/phonenumber"
+        android:inputType="number"
+        ></EditText>
+
+    <EditText
+        android:id="@+id/morada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/address"
+        android:inputType="text"
+        ></EditText>
+
+    <EditText
+        android:id="@+id/codigo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/postal"
+        android:inputType="text"
+        ></EditText>
+
+
+
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="290dp"
+        android:layout_marginTop="-275dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/save"
+        android:layout_gravity="center_horizontal"
+        android:onClick="button1"
+
+        ></Button>
+
+
+
+
+</LinearLayout>

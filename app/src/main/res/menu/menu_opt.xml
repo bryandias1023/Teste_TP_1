@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item android:id="@+id/Logout_button"
+        android:title="Logout" />
+
+    <item android:id="@+id/femC"
+        android:title="@string/ordegenderf" />
+
+    <item android:id="@+id/malC"
+        android:title="@string/ordegenderm" />
+
+    <item android:id="@+id/allC"
+        android:title="@string/allC"/>
+
+    <item android:id="@+id/idade"
+        android:title="@string/age20"/>
+    <item android:id="@+id/nomes"
+        android:title="procurar"/>
+
+    <item
+        android:id="@+id/btn1"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="@string/app_name"
+        app:showAsAction="always" />
+
+
+
+
+
+
+
+</menu>

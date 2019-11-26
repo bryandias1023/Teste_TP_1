@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Contact</string>
+    <string name="action_settings">Settings</string>
+    <string name="newcontact">New Contact</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="age">Age</string>
+    <string name="gender">Gender</string>
+    <string name="phonenumber">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="profession">Profession</string>
+    <string name="introduce">Please Introduce the information of your contact</string>
+    <string name="warning1">Please Introduce the information</string>
+    <string name="save">Save</string>
+    <string name="postal">Postal-Address</string>
+    <string name="button">Create</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+    <string name="alert">"Do you really want to remove this contact?"</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="removed">The contact has been remove</string>
+    <string name="warning2">ATTENTION!!</string>
+    <string name="editcontact">Edit Contact</string>
+    <string name="contacedit">Success</string>
+    <string name="male">Male</string>
+    <string name="fem">Feminine</string>
+    <string name="ordegenderf">Feminine contacts</string>
+    <string name="ordegenderm">Male contacts</string>
+    <string name="allC">All Contacts</string>
+    <string name="age20">Age less then 20</string>
+    <string name="warning3">Email or Password invalid</string>
+    <string name="warning4">This user exist in the app please insert another e-mail</string>
+    <string name="passwd">Password dont match</string>
+    <string name="warning5">Did not find contact</string>
+    <string name="find">Find</string>
+    <string name="findS">Find Contact</string>
+
+</resources>

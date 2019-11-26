@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Ver">
+
+
+    <TextView
+        android:id="@+id/tnome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#002357"
+        android:textSize="20sp"
+        android:text="@string/name"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tnome"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="75dp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/tapelido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/surname"
+        android:textColor="#002357"
+        android:textSize="20sp"
+        android:layout_below="@+id/name"
+        ></TextView>
+
+
+    <TextView
+        android:id="@+id/surname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tapelido"
+        android:layout_marginTop="28dp"
+        android:layout_marginLeft="90dp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/tmorada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/address"
+        android:textColor="#002357"
+        android:textSize="20sp"
+        android:layout_below="@+id/surname"
+        ></TextView>
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tmorada"
+        android:layout_marginTop="53dp"
+        android:layout_marginLeft="80dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/tprofissao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profession"
+        android:textColor="#002357"
+        android:textSize="20sp"
+        android:layout_below="@+id/address"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/profession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tprofissao"
+        android:layout_marginTop="79dp"
+        android:layout_marginLeft="100dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/tgenero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profession"
+        android:textColor="#002357"
+        android:textSize="20sp"
+        android:text="@string/gender"></TextView>
+
+    <TextView
+        android:id="@+id/gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tgenero"
+        android:layout_marginTop="103dp"
+        android:layout_marginLeft="67dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/tcodigo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/postal"
+        android:textColor="#002357"
+        android:textSize="20sp"
+        android:layout_below="@+id/gender"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tcodigo"
+        android:layout_marginTop="127dp"
+        android:layout_marginLeft="145dp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/tidade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/age"
+        android:textColor="#002357"
+        android:textSize="20sp"></TextView>
+
+
+    <TextView
+        android:id="@+id/age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tidade"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="40dp"></TextView>
+
+    <TextView
+        android:id="@+id/tnumero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="@string/phonenumber"
+        android:textColor="#002357"
+        android:textSize="20sp"></TextView>
+
+    <TextView
+        android:id="@+id/numberphone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tidade"
+        android:layout_marginLeft="-48dp"
+        android:layout_marginTop="155dp"
+
+        ></TextView>
+
+
+</RelativeLayout>
