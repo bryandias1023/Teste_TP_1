@@ -17,6 +17,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +31,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class second extends AppCompatActivity implements SensorEventListener {
 
@@ -293,8 +297,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
             //Se o user pretender editar invoca o metodo EditBox
             case R.id.edit:
-                EditBox(p);
-
+                EditBox(id_P);
                 return true;
             //Caso o user queira remover cria um popup a perguntar se pretende mesmo remover o contacto
             case R.id.remove:
@@ -358,7 +361,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
     }
 
 
-    public void EditBox(final Person p) {
+    public void EditBox(final int id_P) {
         final Dialog dialog = new Dialog(second.this);//criação de um caixa de texto
         dialog.setContentView(R.layout.edit_box);//a caixa de dialogo vai buscar o conteudo do layout da edit box
         TextView txtMessage = (TextView) dialog.findViewById(R.id.txtmessage);//invoca a uma text view que irá imprimir uma mensgem
@@ -372,9 +375,43 @@ public class second extends AppCompatActivity implements SensorEventListener {
         final EditText Codigo = (EditText) dialog.findViewById(R.id.postaladdress);
         final EditText Idade = (EditText) dialog.findViewById(R.id.idade);
         final EditText Numero = (EditText) dialog.findViewById(R.id.numero);
-        //recebe da classe person os parametros a baixo e imprime nas edit text
-       /*cursor = db.query(false, Contrato.Person.TABLE_NAME, Contrato.Person.PROJECTION, Contrato.Person._ID + " = ?", new String[]{p + ""}, null, null, null, null);
 
+        //recebe da classe person os parametros a baixo e imprime nas edit text
+
+
+        String url="http://bdias.000webhostapp.com/myslim/api/contacto/"+id_P;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    Nome.setText(response.getString("nome"));
+                    Apelido.setText(response.getString("apelido"));
+                    Morada.setText(response.getString("morada"));
+                    Profissao.setText(response.getString("profissao"));
+                    Genero.setText(response.getString("genero"));
+                    Codigo.setText(response.getString("codigopostal"));
+                    Idade.setText(response.getString("idade"));
+                    Numero.setText(response.getString("telemovel"));
+
+
+                } catch (JSONException e) {
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(second.this, error.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("Erro", error.toString());
+            }
+        });
+        MySingleton.getInstance(second.this).addToRequestQueue(jsonObjectRequest);
+
+
+          /*
         cursor.moveToFirst();
         Nome.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_NAME)));
         Apelido.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_SURNAME)));
@@ -406,23 +443,75 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
                         idade = Integer.parseInt(Idade.getText().toString());
                     }
-                    // caso preencha todos os campos envia para o array os novos dados
-                    ContentValues cv = new ContentValues();
-                    cv.put(Contrato.Person.COLUMN_NAME, Nome.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_SURNAME, Apelido.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_ADDRESS, Morada.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_PROFESSION, Profissao.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_GENDER, Genero.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_POSTALCODE, Codigo.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_AGE, idade);
-                    cv.put(Contrato.Person.COLUMN_NUMBER, Numero.getText().toString());
-                    db.update(Contrato.Person.TABLE_NAME, cv, Contrato.Person._ID + " = ?", new String[]{p + ""});
+
+                    String url = "http://bdias.000webhostapp.com/myslim/api/contactosu/"+ id_P;
+                    Map<String, String> jsonParams = new HashMap<String, String>();
+
+                    jsonParams.put("nome", Nome.getText().toString());
+                    jsonParams.put("apelido", Apelido.getText().toString());
+                    jsonParams.put("morada", Morada.getText().toString());
+                    jsonParams.put("profissao", Profissao.getText().toString());
+                    jsonParams.put("genero",Genero.getText().toString());
+                    jsonParams.put("codigopostal",Codigo.getText().toString());
+                    jsonParams.put("idade",idade.toString());
+                    //jsonParams.put("pais_id","2");
+
+
+
+
+
+
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(jsonParams), new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+
+                                if (response.getBoolean("status")) {
+
+                                    Toast.makeText(second.this, response.getString("MSG"), Toast.LENGTH_LONG).show();
+
+
+                                } else {
+                                    Toast.makeText(second.this, response.getString("MSG"), Toast.LENGTH_LONG).show();
+
+                                }
+
+                            } catch (JSONException ex) {
+                            }
+
+
+                        }
+
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_LONG).show();
+
+                        }
+                    }) {
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("Content-Type", "application/json; charset=utf-8");
+                            headers.put("User-agent", System.getProperty("http.agent"));
+                            return headers;
+                        }
+
+
+                    };
+
+
+                    MySingleton.getInstance(second.this).addToRequestQueue(postRequest);
+
+                }
 
                     onResume();// atualiza a lista
                     dialog.dismiss();
                     Toast.makeText(second.this, getResources().getString(R.string.contacedit), Toast.LENGTH_SHORT).show();//imprime toast a dizer que o contacto foi editado com sucesso
-                }
+
             }
+
         });
         dialog.show();
     }
