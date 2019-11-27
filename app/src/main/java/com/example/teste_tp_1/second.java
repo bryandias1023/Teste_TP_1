@@ -56,6 +56,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
     String user_name;
     Intent login;
     int id_user;
+    Integer idperson;
     //Iniciação do array e do request code
     private int REQUEST_CODE_OP = 1;
 
@@ -96,8 +97,8 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
 
  */
-                Person p= arrayPerson.get(position);
-                Integer idperson= p.getId();
+                Person p = arrayPerson.get(position);
+                idperson = p.getId();
                 Intent intent = new Intent(second.this, Ver.class);
                 intent.putExtra("ver", idperson);
                 startActivity(intent);
@@ -118,7 +119,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
         super.onResume();
 
 
-        if(!arrayPerson.isEmpty()) {
+        if (!arrayPerson.isEmpty()) {
             arrayPerson.clear();
         }
 /*
@@ -130,7 +131,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
 
  */
-        String url = "http://bdias.000webhostapp.com/myslim/api/contactos/"+ id_user;
+        String url = "http://bdias.000webhostapp.com/myslim/api/contactos/" + id_user;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -142,8 +143,8 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
                         JSONObject obj = arr.getJSONObject(i);
 
-                        Person p = new Person(obj.getInt("id"),obj.getString("nome"),obj.getString("apelido"),obj.getString("morada"),obj.getString("profissao"),
-                                obj.getString("genero"),obj.getString("codigopostal"),obj.getInt("idade"),obj.getInt("telemovel"),obj.getInt("user_id"),obj.getInt("pais_id"));
+                        Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                                obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
                         arrayPerson.add(p);
 
                     }
@@ -160,9 +161,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
             }
 
 
-
         });
-
 
 
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
@@ -199,30 +198,6 @@ public class second extends AppCompatActivity implements SensorEventListener {
     }
 
  */
-
-
-
-
-    public void lista(String nome){
-
-        c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?" + " and " + Contrato.Person.COLUMN_NAME+ " = ?", new String[]{id_user + "",nome});
-
-        if(c!=null&&c.getCount()>0){
-            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-            listView.setAdapter(adapter);
-
-        }
-
-        else {
-
-            Toast.makeText(second.this, getResources().getString(R.string.warning5), Toast.LENGTH_SHORT).show();
-            c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?", new String[]{id_user + ""});//query que retira da tabla person todos os contactos introduzidos por aquele id
-            //c=db.query(false, Contrato.Person.TABLE_NAME,Contrato.Person.PROJECTION,null,null,null,null,null,null);
-            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);//imprime nome e apelido
-            listView.setAdapter(adapter);//lista os contactos
-
-        }
-    }
 
 
     //Criação de um menu contextual que irá permitir um long click para editar e remover contacto
@@ -292,8 +267,8 @@ public class second extends AppCompatActivity implements SensorEventListener {
                 adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
                 listView.setAdapter(adapter);
                 break;
-            case  R.id.nomes:
-                EditBoxs();
+            case R.id.nomes:
+                //EditBoxs();
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -311,36 +286,19 @@ public class second extends AppCompatActivity implements SensorEventListener {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int index = info.position;
-        c.moveToPosition(index);
-        final int id_person = c.getInt(c.getColumnIndex(Contrato.Person._ID));
+        final Person p = arrayPerson.get(index);
+         final int id_P = p.getId();
+//        final int id_person = c.getInt(c.getColumnIndex(Contrato.Person._ID));
         switch (item.getItemId()) {
 
             //Se o user pretender editar invoca o metodo EditBox
             case R.id.edit:
-                EditBox(id_person);
+                EditBox(p);
 
                 return true;
             //Caso o user queira remover cria um popup a perguntar se pretende mesmo remover o contacto
             case R.id.remove:
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.warning2))
-                        .setMessage(getString(R.string.alert))
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Toast.makeText(second.this, getString(R.string.removed), Toast.LENGTH_SHORT).show();
-                                db.delete(Contrato.Person.TABLE_NAME, Contrato.Person._ID + " = ?", new String[]{id_person + ""});
-                                onResume();
-
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        }).show();
+                removeUser(id_P);
 
             default:
                 return super.onContextItemSelected(item);
@@ -350,7 +308,57 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
     //metodo que permite editar um contacto
 
-    public void EditBox(final int id_person) {
+    public void removeUser( final int id_P) {
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.warning2))
+                .setMessage(getString(R.string.alert))
+
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(second.this, getString(R.string.removed), Toast.LENGTH_SHORT).show();
+
+                        String url = "http://bdias.000webhostapp.com/myslim/api/contactor/" + id_P;
+
+
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            Toast.makeText(second.this, "xau laura", Toast.LENGTH_SHORT).show();//imprime um toas a dizer que deve preencher todos os campos
+
+
+                                        } catch (Exception e) {
+                                        }
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(second.this, "não deu primo", Toast.LENGTH_SHORT).show();//imprime um toas a dizer que deve preencher todos os campos
+
+                                    }
+                                });
+
+                        MySingleton.getInstance(second.this).addToRequestQueue(jsonObjectRequest);
+                        onResume();
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
+
+    }
+
+
+    public void EditBox(final Person p) {
         final Dialog dialog = new Dialog(second.this);//criação de um caixa de texto
         dialog.setContentView(R.layout.edit_box);//a caixa de dialogo vai buscar o conteudo do layout da edit box
         TextView txtMessage = (TextView) dialog.findViewById(R.id.txtmessage);//invoca a uma text view que irá imprimir uma mensgem
@@ -365,7 +373,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
         final EditText Idade = (EditText) dialog.findViewById(R.id.idade);
         final EditText Numero = (EditText) dialog.findViewById(R.id.numero);
         //recebe da classe person os parametros a baixo e imprime nas edit text
-        cursor = db.query(false, Contrato.Person.TABLE_NAME, Contrato.Person.PROJECTION, Contrato.Person._ID + " = ?", new String[]{id_person + ""}, null, null, null, null);
+       /*cursor = db.query(false, Contrato.Person.TABLE_NAME, Contrato.Person.PROJECTION, Contrato.Person._ID + " = ?", new String[]{p + ""}, null, null, null, null);
 
         cursor.moveToFirst();
         Nome.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_NAME)));
@@ -377,6 +385,11 @@ public class second extends AppCompatActivity implements SensorEventListener {
         Idade.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_AGE)));
         Numero.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_NUMBER)));
         cursor.close();
+
+
+        */
+
+
 
 
         Button bt = (Button) dialog.findViewById(R.id.btdone);//declaração de um para guardar as alterações
@@ -403,7 +416,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
                     cv.put(Contrato.Person.COLUMN_POSTALCODE, Codigo.getText().toString());
                     cv.put(Contrato.Person.COLUMN_AGE, idade);
                     cv.put(Contrato.Person.COLUMN_NUMBER, Numero.getText().toString());
-                    db.update(Contrato.Person.TABLE_NAME, cv, Contrato.Person._ID + " = ?", new String[]{id_person + ""});
+                    db.update(Contrato.Person.TABLE_NAME, cv, Contrato.Person._ID + " = ?", new String[]{p + ""});
 
                     onResume();// atualiza a lista
                     dialog.dismiss();
@@ -413,6 +426,8 @@ public class second extends AppCompatActivity implements SensorEventListener {
         });
         dialog.show();
     }
+
+
 
 
 
@@ -473,7 +488,6 @@ public class second extends AppCompatActivity implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 final String nome=Nome.getText().toString();
-                lista(nome);
                 dialog.dismiss();
 
             }
@@ -481,4 +495,6 @@ public class second extends AppCompatActivity implements SensorEventListener {
         dialog.show();
 
     }
-}
+
+
+    }

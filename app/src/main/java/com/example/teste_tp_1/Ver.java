@@ -37,10 +37,14 @@ public class Ver extends AppCompatActivity implements Serializable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ver_contato);
         mDbHelper=new DB(this);
         db= mDbHelper.getReadableDatabase();
+
+        //Toast.makeText(Ver.this, id, Toast.LENGTH_SHORT).show();
+
         //decleração das texview
         tx1=findViewById(R.id.name);
         tx2=findViewById(R.id.surname);
@@ -53,6 +57,9 @@ public class Ver extends AppCompatActivity implements Serializable {
         tx9=findViewById(R.id.pais);
         //mediante o id passado mostra o contacto
         id=getIntent().getExtras().getInt("ver");
+        String pri= String.valueOf(id);
+        Toast.makeText(Ver.this, pri, Toast.LENGTH_SHORT).show();
+
 
         String url="http://bdias.000webhostapp.com/myslim/api/contacto/" +id;
 
