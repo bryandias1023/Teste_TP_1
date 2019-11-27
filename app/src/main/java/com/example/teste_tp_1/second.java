@@ -239,25 +239,18 @@ public class second extends AppCompatActivity implements SensorEventListener {
                 break;
 
             case R.id.femC:
-                c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?" + " and " + Contrato.Person.COLUMN_GENDER + " = ?", new String[]{id_user + "", getResources().getString(R.string.fem)});
-                //Atualizar lista
-                adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-                listView.setAdapter(adapter);
+                filtroFem(id_user);
                 break;
 
             case R.id.malC:
 
-                c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?" + " and " + Contrato.Person.COLUMN_GENDER + " = ?", new String[]{id_user + "", getResources().getString(R.string.male)});
+                filtroMasc(id_user);
 
-                //Atualizar lista
-                adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-                listView.setAdapter(adapter);
                 break;
 
             case R.id.allC:
-                c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?", new String[]{id_user + ""});
-                adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-                listView.setAdapter(adapter);
+               allCon(id_user);
+
                 break;
 
             case R.id.btn1:
@@ -281,6 +274,146 @@ public class second extends AppCompatActivity implements SensorEventListener {
         }
 
         return true;
+
+
+    }
+
+ public void allCon(int id_user) {
+
+
+     if (!arrayPerson.isEmpty()) {
+         arrayPerson.clear();
+     }
+
+
+     String urlallc = "http://bdias.000webhostapp.com/myslim/api/contactos/" + id_user;
+
+     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlallc, null, new Response.Listener<JSONObject>() {
+         @Override
+         public void onResponse(JSONObject response) {
+             try {
+
+                 JSONArray arr = response.getJSONArray("DATA");
+                 for (int i = 0; i < arr.length(); i++) {
+
+                     JSONObject obj = arr.getJSONObject(i);
+
+                     Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                             obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
+                     arrayPerson.add(p);
+
+                 }
+                 CustomArrayAdapter itemsAdapter = new CustomArrayAdapter(second.this, arrayPerson);
+                 ((ListView) findViewById(R.id.lista)).setAdapter(itemsAdapter);
+             } catch (JSONException e) {
+             }
+
+         }
+     }, new Response.ErrorListener() {
+         @Override
+         public void onErrorResponse(VolleyError error) {
+             Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+         }
+
+
+     });
+
+
+     MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+ }
+
+
+
+public void filtroMasc(int id_user){
+
+
+    if (!arrayPerson.isEmpty()) {
+        arrayPerson.clear();
+    }
+    String urlmasc = "http://bdias.000webhostapp.com/myslim/api/ordemmasc/" + id_user;
+
+    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlmasc, null, new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+
+                JSONArray arr = response.getJSONArray("DATA");
+                for (int i = 0; i < arr.length(); i++) {
+
+                    JSONObject obj = arr.getJSONObject(i);
+
+                    Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                            obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
+                    arrayPerson.add(p);
+
+                }
+                CustomArrayAdapter itemsAdapter = new CustomArrayAdapter(second.this, arrayPerson);
+                ((ListView) findViewById(R.id.lista)).setAdapter(itemsAdapter);
+            } catch (JSONException e) {
+            }
+
+        }
+    }, new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+
+    });
+
+
+    MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+
+}
+
+
+
+
+    public void filtroFem(int id_user){
+
+
+        if (!arrayPerson.isEmpty()) {
+            arrayPerson.clear();
+        }
+
+
+
+        String url = "http://bdias.000webhostapp.com/myslim/api/ordemfem/" + id_user;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+
+                    JSONArray arr = response.getJSONArray("DATA");
+                    for (int i = 0; i < arr.length(); i++) {
+
+                        JSONObject obj = arr.getJSONObject(i);
+
+                        Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                                obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
+                        arrayPerson.add(p);
+
+                    }
+                    CustomArrayAdapter itemsAdapter = new CustomArrayAdapter(second.this, arrayPerson);
+                    ((ListView) findViewById(R.id.lista)).setAdapter(itemsAdapter);
+                } catch (JSONException e) {
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
+
+
+        MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+
 
 
     }
