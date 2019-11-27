@@ -23,7 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
-
+Encrypt encry=new Encrypt();
     DB mDbHelper;
     SQLiteDatabase db;
     Cursor c,c_passwd;
@@ -57,8 +57,13 @@ public class LoginActivity extends AppCompatActivity {
                 //guarda valores introduzidos pelo o user em variaveis do tipo string
                 final String email = email_field.getText().toString();
                 final String password = password_field.getText().toString();
-
-                String url = "http://bdias.000webhostapp.com/myslim/api/user/" + email + "&" + password;
+                String passwd=null;
+                try {
+                    passwd = encry.encryptar(password);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String url = "http://bdias.000webhostapp.com/myslim/api/user/" + email + "&" + passwd;
 
 
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

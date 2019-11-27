@@ -33,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     SQLiteDatabase db;
     Cursor c;
     String email1;
+    Encrypt e=new Encrypt();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +79,12 @@ public class RegisterActivity extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            String passwordEnc=null;
                             if (password_1.equals(password_2)) {
-
-                                carregaUser(email_id, password_1);
+                                try {
+                                    passwordEnc=e.encryptar(password_1);
+                                } catch (Exception e) { }
+                                carregaUser(email_id, passwordEnc);
                                 startActivity(next_activity);
 
                             } else {
