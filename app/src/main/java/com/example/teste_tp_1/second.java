@@ -17,6 +17,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +31,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class second extends AppCompatActivity implements SensorEventListener {
 
@@ -56,6 +60,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
     String user_name;
     Intent login;
     int id_user;
+    Integer idperson;
     //Iniciação do array e do request code
     private int REQUEST_CODE_OP = 1;
 
@@ -90,11 +95,16 @@ public class second extends AppCompatActivity implements SensorEventListener {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+/*
                 c.moveToPosition(position);
                 int id_person = c.getInt(c.getColumnIndex(Contrato.Person._ID));
+
+
+ */
+                Person p = arrayPerson.get(position);
+                idperson = p.getId();
                 Intent intent = new Intent(second.this, Ver.class);
-                intent.putExtra("ver", id_person);
+                intent.putExtra("ver", idperson);
                 startActivity(intent);
 
 
@@ -111,7 +121,9 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
 
         super.onResume();
-        if(!arrayPerson.isEmpty()) {
+
+
+        if (!arrayPerson.isEmpty()) {
             arrayPerson.clear();
         }
 /*
@@ -123,7 +135,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
 
  */
-        String url = "http://bdias.000webhostapp.com/myslim/api/contactos/"+ id_user;
+        String url = "http://bdias.000webhostapp.com/myslim/api/contactos/" + id_user;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -135,8 +147,8 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
                         JSONObject obj = arr.getJSONObject(i);
 
-                        Person p = new Person(obj.getInt("id"),obj.getString("nome"),obj.getString("apelido"),obj.getString("morada"),obj.getString("profissao"),
-                                obj.getString("genero"),obj.getString("codigopostal"),obj.getInt("idade"),obj.getInt("telemovel"),obj.getInt("user_id"),obj.getInt("pais_id"));
+                        Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                                obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
                         arrayPerson.add(p);
 
                     }
@@ -153,9 +165,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
             }
 
 
-
         });
-
 
 
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
@@ -194,30 +204,6 @@ public class second extends AppCompatActivity implements SensorEventListener {
  */
 
 
-
-
-    public void lista(String nome){
-
-        c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?" + " and " + Contrato.Person.COLUMN_NAME+ " = ?", new String[]{id_user + "",nome});
-
-        if(c!=null&&c.getCount()>0){
-            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-            listView.setAdapter(adapter);
-
-        }
-
-        else {
-
-            Toast.makeText(second.this, getResources().getString(R.string.warning5), Toast.LENGTH_SHORT).show();
-            c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?", new String[]{id_user + ""});//query que retira da tabla person todos os contactos introduzidos por aquele id
-            //c=db.query(false, Contrato.Person.TABLE_NAME,Contrato.Person.PROJECTION,null,null,null,null,null,null);
-            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);//imprime nome e apelido
-            listView.setAdapter(adapter);//lista os contactos
-
-        }
-    }
-
-
     //Criação de um menu contextual que irá permitir um long click para editar e remover contacto
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
@@ -253,25 +239,18 @@ public class second extends AppCompatActivity implements SensorEventListener {
                 break;
 
             case R.id.femC:
-                c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?" + " and " + Contrato.Person.COLUMN_GENDER + " = ?", new String[]{id_user + "", getResources().getString(R.string.fem)});
-                //Atualizar lista
-                adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-                listView.setAdapter(adapter);
+                filtroFem(id_user);
                 break;
 
             case R.id.malC:
 
-                c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?" + " and " + Contrato.Person.COLUMN_GENDER + " = ?", new String[]{id_user + "", getResources().getString(R.string.male)});
+                filtroMasc(id_user);
 
-                //Atualizar lista
-                adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-                listView.setAdapter(adapter);
                 break;
 
             case R.id.allC:
-                c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?", new String[]{id_user + ""});
-                adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-                listView.setAdapter(adapter);
+               allCon(id_user);
+
                 break;
 
             case R.id.btn1:
@@ -285,8 +264,8 @@ public class second extends AppCompatActivity implements SensorEventListener {
                 adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, c, new String[]{Contrato.Person.COLUMN_NAME, Contrato.Person.COLUMN_SURNAME}, new int[]{android.R.id.text1, android.R.id.text2}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
                 listView.setAdapter(adapter);
                 break;
-            case  R.id.nomes:
-                EditBoxs();
+            case R.id.nomes:
+                EditBoxs(id_user);
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -299,41 +278,163 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
     }
 
+ public void allCon(int id_user) {
+
+
+     if (!arrayPerson.isEmpty()) {
+         arrayPerson.clear();
+     }
+
+
+     String urlallc = "http://bdias.000webhostapp.com/myslim/api/contactos/" + id_user;
+
+     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlallc, null, new Response.Listener<JSONObject>() {
+         @Override
+         public void onResponse(JSONObject response) {
+             try {
+
+                 JSONArray arr = response.getJSONArray("DATA");
+                 for (int i = 0; i < arr.length(); i++) {
+
+                     JSONObject obj = arr.getJSONObject(i);
+
+                     Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                             obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
+                     arrayPerson.add(p);
+
+                 }
+                 CustomArrayAdapter itemsAdapter = new CustomArrayAdapter(second.this, arrayPerson);
+                 ((ListView) findViewById(R.id.lista)).setAdapter(itemsAdapter);
+             } catch (JSONException e) {
+             }
+
+         }
+     }, new Response.ErrorListener() {
+         @Override
+         public void onErrorResponse(VolleyError error) {
+             Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+         }
+
+
+     });
+
+
+     MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+ }
+
+
+
+public void filtroMasc(int id_user){
+
+
+    if (!arrayPerson.isEmpty()) {
+        arrayPerson.clear();
+    }
+    String urlmasc = "http://bdias.000webhostapp.com/myslim/api/ordemmasc/" + id_user;
+
+    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlmasc, null, new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+
+                JSONArray arr = response.getJSONArray("DATA");
+                for (int i = 0; i < arr.length(); i++) {
+
+                    JSONObject obj = arr.getJSONObject(i);
+
+                    Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                            obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
+                    arrayPerson.add(p);
+
+                }
+                CustomArrayAdapter itemsAdapter = new CustomArrayAdapter(second.this, arrayPerson);
+                ((ListView) findViewById(R.id.lista)).setAdapter(itemsAdapter);
+            } catch (JSONException e) {
+            }
+
+        }
+    }, new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+
+    });
+
+
+    MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+
+}
+
+
+
+
+    public void filtroFem(int id_user){
+
+
+        if (!arrayPerson.isEmpty()) {
+            arrayPerson.clear();
+        }
+
+
+
+        String url = "http://bdias.000webhostapp.com/myslim/api/ordemfem/" + id_user;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+
+                    JSONArray arr = response.getJSONArray("DATA");
+                    for (int i = 0; i < arr.length(); i++) {
+
+                        JSONObject obj = arr.getJSONObject(i);
+
+                        Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                                obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
+                        arrayPerson.add(p);
+
+                    }
+                    CustomArrayAdapter itemsAdapter = new CustomArrayAdapter(second.this, arrayPerson);
+                    ((ListView) findViewById(R.id.lista)).setAdapter(itemsAdapter);
+                } catch (JSONException e) {
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
+
+
+        MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+
+
+
+    }
+
     //tomada de decisões mediante a opção selecionada pelo o user
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int index = info.position;
-        c.moveToPosition(index);
-        final int id_person = c.getInt(c.getColumnIndex(Contrato.Person._ID));
+        final Person p = arrayPerson.get(index);
+         final int id_P = p.getId();
+//        final int id_person = c.getInt(c.getColumnIndex(Contrato.Person._ID));
         switch (item.getItemId()) {
 
             //Se o user pretender editar invoca o metodo EditBox
             case R.id.edit:
-                EditBox(id_person);
-
+                EditBox(id_P);
                 return true;
             //Caso o user queira remover cria um popup a perguntar se pretende mesmo remover o contacto
             case R.id.remove:
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.warning2))
-                        .setMessage(getString(R.string.alert))
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Toast.makeText(second.this, getString(R.string.removed), Toast.LENGTH_SHORT).show();
-                                db.delete(Contrato.Person.TABLE_NAME, Contrato.Person._ID + " = ?", new String[]{id_person + ""});
-                                onResume();
-
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        }).show();
+                removeUser(id_P);
 
             default:
                 return super.onContextItemSelected(item);
@@ -343,7 +444,57 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
     //metodo que permite editar um contacto
 
-    public void EditBox(final int id_person) {
+    public void removeUser( final int id_P) {
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.warning2))
+                .setMessage(getString(R.string.alert))
+
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(second.this, getString(R.string.removed), Toast.LENGTH_SHORT).show();
+
+                        String url = "http://bdias.000webhostapp.com/myslim/api/contactor/" + id_P;
+
+
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            Toast.makeText(second.this, "xau laura", Toast.LENGTH_SHORT).show();//imprime um toas a dizer que deve preencher todos os campos
+
+
+                                        } catch (Exception e) {
+                                        }
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(second.this, "não deu primo", Toast.LENGTH_SHORT).show();//imprime um toas a dizer que deve preencher todos os campos
+
+                                    }
+                                });
+
+                        MySingleton.getInstance(second.this).addToRequestQueue(jsonObjectRequest);
+                        onResume();
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
+
+    }
+
+
+    public void EditBox(final int id_P) {
         final Dialog dialog = new Dialog(second.this);//criação de um caixa de texto
         dialog.setContentView(R.layout.edit_box);//a caixa de dialogo vai buscar o conteudo do layout da edit box
         TextView txtMessage = (TextView) dialog.findViewById(R.id.txtmessage);//invoca a uma text view que irá imprimir uma mensgem
@@ -357,9 +508,43 @@ public class second extends AppCompatActivity implements SensorEventListener {
         final EditText Codigo = (EditText) dialog.findViewById(R.id.postaladdress);
         final EditText Idade = (EditText) dialog.findViewById(R.id.idade);
         final EditText Numero = (EditText) dialog.findViewById(R.id.numero);
-        //recebe da classe person os parametros a baixo e imprime nas edit text
-        cursor = db.query(false, Contrato.Person.TABLE_NAME, Contrato.Person.PROJECTION, Contrato.Person._ID + " = ?", new String[]{id_person + ""}, null, null, null, null);
 
+        //recebe da classe person os parametros a baixo e imprime nas edit text
+
+
+        String url="http://bdias.000webhostapp.com/myslim/api/contacto/"+id_P;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    Nome.setText(response.getString("nome"));
+                    Apelido.setText(response.getString("apelido"));
+                    Morada.setText(response.getString("morada"));
+                    Profissao.setText(response.getString("profissao"));
+                    Genero.setText(response.getString("genero"));
+                    Codigo.setText(response.getString("codigopostal"));
+                    Idade.setText(response.getString("idade"));
+                    Numero.setText(response.getString("telemovel"));
+
+
+                } catch (JSONException e) {
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(second.this, error.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("Erro", error.toString());
+            }
+        });
+        MySingleton.getInstance(second.this).addToRequestQueue(jsonObjectRequest);
+
+
+          /*
         cursor.moveToFirst();
         Nome.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_NAME)));
         Apelido.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_SURNAME)));
@@ -370,6 +555,11 @@ public class second extends AppCompatActivity implements SensorEventListener {
         Idade.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_AGE)));
         Numero.setText(cursor.getString(cursor.getColumnIndexOrThrow(Contrato.Person.COLUMN_NUMBER)));
         cursor.close();
+
+
+        */
+
+
 
 
         Button bt = (Button) dialog.findViewById(R.id.btdone);//declaração de um para guardar as alterações
@@ -386,26 +576,80 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
                         idade = Integer.parseInt(Idade.getText().toString());
                     }
-                    // caso preencha todos os campos envia para o array os novos dados
-                    ContentValues cv = new ContentValues();
-                    cv.put(Contrato.Person.COLUMN_NAME, Nome.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_SURNAME, Apelido.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_ADDRESS, Morada.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_PROFESSION, Profissao.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_GENDER, Genero.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_POSTALCODE, Codigo.getText().toString());
-                    cv.put(Contrato.Person.COLUMN_AGE, idade);
-                    cv.put(Contrato.Person.COLUMN_NUMBER, Numero.getText().toString());
-                    db.update(Contrato.Person.TABLE_NAME, cv, Contrato.Person._ID + " = ?", new String[]{id_person + ""});
+
+                    String url = "http://bdias.000webhostapp.com/myslim/api/contactosu/"+ id_P;
+                    Map<String, String> jsonParams = new HashMap<String, String>();
+
+                    jsonParams.put("nome", Nome.getText().toString());
+                    jsonParams.put("apelido", Apelido.getText().toString());
+                    jsonParams.put("morada", Morada.getText().toString());
+                    jsonParams.put("profissao", Profissao.getText().toString());
+                    jsonParams.put("genero",Genero.getText().toString());
+                    jsonParams.put("codigopostal",Codigo.getText().toString());
+                    jsonParams.put("idade",idade.toString());
+                    //jsonParams.put("pais_id","2");
+
+
+
+
+
+
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(jsonParams), new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+
+                                if (response.getBoolean("status")) {
+
+                                    Toast.makeText(second.this, response.getString("MSG"), Toast.LENGTH_LONG).show();
+
+
+                                } else {
+                                    Toast.makeText(second.this, response.getString("MSG"), Toast.LENGTH_LONG).show();
+
+                                }
+
+                            } catch (JSONException ex) {
+                            }
+
+
+                        }
+
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_LONG).show();
+
+                        }
+                    }) {
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("Content-Type", "application/json; charset=utf-8");
+                            headers.put("User-agent", System.getProperty("http.agent"));
+                            return headers;
+                        }
+
+
+                    };
+
+
+                    MySingleton.getInstance(second.this).addToRequestQueue(postRequest);
+
+                }
 
                     onResume();// atualiza a lista
                     dialog.dismiss();
                     Toast.makeText(second.this, getResources().getString(R.string.contacedit), Toast.LENGTH_SHORT).show();//imprime toast a dizer que o contacto foi editado com sucesso
-                }
+
             }
+
         });
         dialog.show();
     }
+
+
 
 
 
@@ -449,7 +693,7 @@ public class second extends AppCompatActivity implements SensorEventListener {
     }
 
 
-    public void EditBoxs() {
+    public void EditBoxs(final int id_user) {
         final Dialog dialog = new Dialog(second.this);//criação de um caixa de texto
         dialog.setContentView(R.layout.editsbox);//a caixa de dialogo vai buscar o conteudo do layout da edit box
         TextView txtMessage = (TextView) dialog.findViewById(R.id.txtmessage);//invoca a uma text view que irá imprimir uma mensgem
@@ -459,14 +703,55 @@ public class second extends AppCompatActivity implements SensorEventListener {
 
         final EditText Nome = (EditText) dialog.findViewById(R.id.nome);
 
-        //c = db.rawQuery("select * from " + Contrato.Person.TABLE_NAME + " where " + Contrato.Person.COLUMN_ID_USER + " = ?" + " and " + Contrato.Person.COLUMN_NAME+ " = ?", new String[]{id_user + "",nome});
+
         Button bt1 = (Button) dialog.findViewById(R.id.btdone1);//declaração de um para guardar as alterações
 
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String nome=Nome.getText().toString();
-                lista(nome);
+
+                if (!arrayPerson.isEmpty()) {
+                    arrayPerson.clear();
+                }
+                String url = "http://bdias.000webhostapp.com/myslim/api/procura/" + id_user +"&"+ nome ;
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            JSONArray arr = response.getJSONArray("DATA");
+                            for (int i = 0; i < arr.length(); i++) {
+
+                                JSONObject obj = arr.getJSONObject(i);
+
+                                Person p = new Person(obj.getInt("id"), obj.getString("nome"), obj.getString("apelido"), obj.getString("morada"), obj.getString("profissao"),
+                                        obj.getString("genero"), obj.getString("codigopostal"), obj.getInt("idade"), obj.getInt("telemovel"), obj.getInt("user_id"), obj.getInt("pais_id"));
+                                arrayPerson.add(p);
+
+                            }
+                            CustomArrayAdapter itemsAdapter = new CustomArrayAdapter(second.this, arrayPerson);
+                            ((ListView) findViewById(R.id.lista)).setAdapter(itemsAdapter);
+                        } catch (JSONException e) {
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(second.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+
+                });
+
+
+                MySingleton.getInstance(second.this).addToRequestQueue(jsonObjectRequest);
+
+
+
+
                 dialog.dismiss();
 
             }
@@ -474,4 +759,6 @@ public class second extends AppCompatActivity implements SensorEventListener {
         dialog.show();
 
     }
-}
+
+
+    }
