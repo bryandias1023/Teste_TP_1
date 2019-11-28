@@ -33,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     SQLiteDatabase db;
     Cursor c;
     String email1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
